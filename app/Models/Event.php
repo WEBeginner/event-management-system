@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 
-// if you guys want to add image you need to add a image_path column in the events table and also add in the migration file by create a new migration file and update the event table
 class Event extends Model
 {
     use SoftDeletes;
@@ -39,5 +39,32 @@ class Event extends Model
     {
         return $this->belongsToMany(Category::class, 'category_event')
                    ->withTimestamps();
+    }
+
+    /**
+     * Scope for upcoming events (start_time is in the future)
+     * Usage: Event::upcoming()->get()
+     */
+    public function scopeUpcoming(Builder $query): Builder
+    {
+        return $query->where('start_time', '>', now());
+    }
+
+    /**
+     * Scope for past events (start_time is in the past)
+     * Usage: Event::past()->get() 
+     */
+    public function scopePast(Builder $query): Builder
+    {
+        return $query->where('start_time', '<', now());
+    }
+
+    /**
+     * Scope for published events
+     * Usage: Event::published()->get()
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('is_published', true);
     }
 }
