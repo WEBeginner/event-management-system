@@ -15,7 +15,14 @@ class CreateAttendeesTable extends Migration
     {
         Schema::create('attendees', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('event_id')->constrained()->onDelete('cascade');
+            $table->enum('status', ['registered', 'attended', 'cancelled'])->default('registered');
+            $table->text('notes')->nullable();
             $table->timestamps();
+            
+            // Ensure each user can only register once per event
+            $table->unique(['user_id', 'event_id']);
         });
     }
 
