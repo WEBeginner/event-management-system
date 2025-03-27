@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Event extends Model
 {
-    use SoftDeletes;
 
     protected $fillable = [
         'user_id', 'title', 'description', 'start_time', 
